@@ -41,6 +41,7 @@
 							type="email"
 							rounded="xl"
 							flat
+							:rules="[rules.required]"
 						></v-text-field>
 						<v-text-field
 							v-model="password"
@@ -49,10 +50,13 @@
 							variant="solo-filled"
 							:append-inner-icon="marker ? 'mdi-eye-off' : 'mdi-eye'"
 							@click:append-inner="toggleMarker"
+							@keydown.enter="login"
 							:type="marker ? 'password' : 'text'"
 							rounded="xl"
 							flat
+							:rules="[rules.required]"
 						></v-text-field>
+
 						<v-btn
 							v-bind="props"
 							text="Login"
@@ -89,10 +93,23 @@
 			>
 		</v-row>
 	</div>
+
+	<alertComponent
+		v-model="isLogged"
+		closable
+		text="Credenciais incorretas"
+		title="Erro"
+		variant="tonal"
+		type="error"
+		border="top"
+		width="400"
+		class="botaoLogin"
+	/>
 </template>
 
 <script>
 import axios from 'axios';
+import alertComponent from './Alert.vue';
 
 export default {
 	name: 'Login',
@@ -101,15 +118,20 @@ export default {
 			marker: true,
 			email: '',
 			password: '',
+			isLogged: false,
+			rules: {
+				required: (value) => !!value || 'O campo é obrigatório',
+			},
 		};
+	},
+	components: {
+		alertComponent,
 	},
 	methods: {
 		toggleMarker() {
 			this.marker = !this.marker;
 		},
 		login() {
-			console.log('email: ', this.email);
-			console.log('senha: ', this.password);
 			axios
 				.post('http://localhost:3000/auth', {
 					email: this.email,
@@ -121,7 +143,12 @@ export default {
 					this.$router.push('/dashboard');
 				})
 				.catch((error) => {
-					console.error('Erro no login: ', error);
+					if (error.response && error.response.status === 401) {
+						this.isLogged = true;
+						setTimeout(() => {
+							this.isLogged = false;
+						}, 3000);
+					}
 				});
 		},
 	},
@@ -143,5 +170,13 @@ export default {
 	100% {
 		opacity: 1;
 	}
+}
+
+.botaoLogin {
+	position: absolute;
+	top: 0;
+	transform: translate(-50%);
+	left: 50%;
+	margin-top: 10px;
 }
 </style>
