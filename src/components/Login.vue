@@ -7,9 +7,10 @@
 				md="6"
 				sm="12"
 				xs="12"
-				class="h-50 d-flex flex-column justify-center px-16 bg-white"
+				class="h-50 d-flex flex-column justify-center px-16 bg-white card"
+				:class="{ flipped: isFlipped }"
 			>
-				<div>
+				<div class="front">
 					<div class="d-flex align-center justify-space-between mb-6">
 						<div class="text-h4 font-weight-thin">Login</div>
 						<div>
@@ -66,8 +67,75 @@
 							id="loginButton"
 							@click="login"
 						></v-btn>
-					</v-form></div
-			></v-col>
+					</v-form>
+				</div>
+
+				<div class="back w-75">
+					<div class="text-h5 mb-4 font-weight-black text-center">
+						Olá, amigo(a)!
+					</div>
+					<v-form>
+						<v-text-field
+							label="Usuário"
+							prepend-inner-icon="mdi-account"
+							rounded="xl"
+							variant="solo-filled"
+							flat
+						></v-text-field>
+						<v-text-field
+							label="E-mail"
+							prepend-inner-icon="mdi-email"
+							rounded="xl"
+							variant="solo-filled"
+							flat
+						></v-text-field>
+						<v-text-field
+							label="Senha"
+							prepend-inner-icon="mdi-lock-outline"
+							rounded="xl"
+							variant="solo-filled"
+							flat
+							:append-inner-icon="marker ? 'mdi-eye-off' : 'mdi-eye'"
+							@click:append-inner="toggleMarker"
+							:type="marker ? 'password' : 'text'"
+						></v-text-field>
+						<v-checkbox
+							><template v-slot:label>
+								<div>
+									Eu li e aceito os
+									<span
+										@click="dialog = true"
+										class="text-red-accent-2 text-decoration-none"
+										>termos e condições</span
+									>
+								</div>
+							</template></v-checkbox
+						>
+
+						<v-dialog v-model="dialog"
+							><v-card
+								class="mx-auto"
+								max-width="500"
+								text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sed semper odio, sed dictum nisi. Fusce pulvinar metus quis aliquet porta. Nulla non tellus laoreet velit malesuada maximus ut vitae lectus. Integer quis metus at leo tristique mattis ut non elit. Maecenas rutrum, ante non ullamcorper mollis, massa sapien semper neque, vel dictum augue lorem id tellus. Sed ultricies metus nec mollis vestibulum. Praesent feugiat at lacus quis laoreet. Nulla quis feugiat nulla. Aliquam hendrerit justo orci. Phasellus elementum aliquet quam, sed auctor lacus tristique quis. Etiam sit amet lobortis lacus. Cras ornare urna interdum gravida placerat. Donec blandit enim augue. Ut commodo tellus sit amet eros pharetra rutrum. Phasellus in libero id felis ornare posuere sed quis felis.
+
+Donec elementum neque non ante mollis, non condimentum diam tempor. Praesent pellentesque vulputate nibh. Morbi eget lorem eros. Donec vitae condimentum nisi, vel tincidunt sapien. Pellentesque non neque mollis, placerat elit vel, commodo erat. Praesent ac tempor quam, et molestie arcu. Donec tincidunt felis mauris, et aliquet turpis laoreet id. Maecenas consectetur ac orci id vulputate.
+
+Cras nec scelerisque est. Cras sit amet magna eleifend ipsum porttitor facilisis. Morbi dictum ac leo ut scelerisque. Aenean maximus auctor erat id blandit. Sed vitae odio urna. Quisque sit amet arcu nibh. Etiam sit amet libero at massa pellentesque ultricies. Suspendisse et metus a velit placerat pretium at nec nunc. Donec quis nulla vitae neque fermentum auctor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce sollicitudin aliquet pharetra.
+
+Pellentesque malesuada, felis eget euismod elementum, enim dolor posuere erat, ac feugiat purus diam ut libero. Sed in orci eleifend, aliquet ligula ac, pretium lorem. Integer at luctus risus, eget cursus ante. Nunc neque purus, tincidunt ut orci eget, tristique tincidunt ante. Nullam et sapien et orci malesuada ullamcorper in id arcu. Mauris quis sapien eget nisi tincidunt cursus. In interdum hendrerit elit ut malesuada. Vestibulum vel pharetra sem.
+
+Praesent malesuada ex dignissim, maximus libero dignissim, dignissim nisl. Maecenas eu lacinia lectus. Proin ac purus faucibus, hendrerit turpis at, tristique ex. Ut pretium aliquam sem in rutrum. Integer in tortor nulla. Sed placerat, sapien at dapibus malesuada, mi metus mollis tortor, id interdum erat leo id orci. Maecenas hendrerit odio dui, at auctor diam porttitor nec. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Pellentesque turpis nisl, varius eget pharetra ut, aliquam at ante. Duis sapien ipsum, semper id sapien a, tincidunt scelerisque odio. Nulla sit amet fermentum ex, id maximus purus. Integer sed ligula ac ex tempus imperdiet."
+								><template v-slot:actions
+									><v-btn
+										@click="dialog = false"
+										text="OK"
+									></v-btn></template></v-card
+						></v-dialog>
+
+						<v-btn type="submit">Inscrever-se</v-btn>
+					</v-form>
+				</div>
+			</v-col>
 			<v-col
 				xl="6"
 				lg="6"
@@ -77,7 +145,7 @@
 				class="bg-red-accent-2 h-50 d-flex align-center justify-center flex-column"
 			>
 				<div class="d-flex justify-center flex-column align-center">
-					<h1 class="mb-4">Bem-vindo ao Login</h1>
+					<h1 class="mb-4">Bem-vindo ao sistema</h1>
 					<h4 class="mb-3 font-weight-light">Não tem uma conta?</h4>
 					<v-hover v-slot="{ isHovering, props }">
 						<v-btn
@@ -86,6 +154,7 @@
 							:variant="isHovering ? 'tonal' : 'outlined'"
 							rounded="xl"
 							:color="isHovering ? 'white' : 'white'"
+							@click="flipCard"
 							>Inscrever-se</v-btn
 						>
 					</v-hover>
@@ -119,6 +188,8 @@ export default {
 			email: '',
 			password: '',
 			isLogged: false,
+			isFlipped: false,
+			dialog: false,
 			rules: {
 				required: (value) => !!value || 'O campo é obrigatório',
 			},
@@ -128,6 +199,9 @@ export default {
 		alertComponent,
 	},
 	methods: {
+		flipCard() {
+			this.isFlipped = !this.isFlipped;
+		},
 		toggleMarker() {
 			this.marker = !this.marker;
 		},
@@ -178,5 +252,27 @@ export default {
 	transform: translate(-50%);
 	left: 50%;
 	margin-top: 10px;
+}
+
+.card {
+	transform-style: preserve-3d;
+	transition: transform 0.5s;
+	transform-style: rotateY(0deg);
+	position: relative;
+}
+
+.flipped {
+	transform: rotateY(180deg);
+}
+
+.front,
+.back {
+	backface-visibility: hidden;
+}
+
+.back {
+	position: absolute;
+	backface-visibility: hidden;
+	transform: rotateY(180deg);
 }
 </style>
