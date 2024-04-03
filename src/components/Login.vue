@@ -71,25 +71,28 @@
 				</div>
 
 				<div class="back w-75">
-					<div class="text-h5 mb-4 font-weight-black text-center">
-						Olá, amigo(a)!
-					</div>
+					<div class="text-h5 mb-4 font-weight-black text-center">CADASTRO</div>
 					<v-form>
 						<v-text-field
+							v-model="user"
 							label="Usuário"
 							prepend-inner-icon="mdi-account"
 							rounded="xl"
 							variant="solo-filled"
 							flat
+							:rules="[rules.required]"
 						></v-text-field>
 						<v-text-field
+							v-model="email"
 							label="E-mail"
 							prepend-inner-icon="mdi-email"
 							rounded="xl"
 							variant="solo-filled"
 							flat
+							:rules="[rules.required]"
 						></v-text-field>
 						<v-text-field
+							v-model="password"
 							label="Senha"
 							prepend-inner-icon="mdi-lock-outline"
 							rounded="xl"
@@ -98,14 +101,15 @@
 							:append-inner-icon="marker ? 'mdi-eye-off' : 'mdi-eye'"
 							@click:append-inner="toggleMarker"
 							:type="marker ? 'password' : 'text'"
+							:rules="[rules.required]"
 						></v-text-field>
-						<v-checkbox
+						<v-checkbox :rules="[rules.required]"
 							><template v-slot:label>
 								<div>
 									Eu li e aceito os
 									<span
 										@click="dialog = true"
-										class="text-red-accent-2 text-decoration-none"
+										class="text-red-accent-2 text-decoration-underline font-weight-bold"
 										>termos e condições</span
 									>
 								</div>
@@ -132,7 +136,14 @@ Praesent malesuada ex dignissim, maximus libero dignissim, dignissim nisl. Maece
 									></v-btn></template></v-card
 						></v-dialog>
 
-						<v-btn type="submit">Inscrever-se</v-btn>
+						<v-btn
+							color="red-accent-2"
+							type="submit"
+							class="w-100"
+							variant="tonal"
+							@click="signUp"
+							>Inscrever-se</v-btn
+						>
 					</v-form>
 				</div>
 			</v-col>
@@ -146,7 +157,11 @@ Praesent malesuada ex dignissim, maximus libero dignissim, dignissim nisl. Maece
 			>
 				<div class="d-flex justify-center flex-column align-center">
 					<h1 class="mb-4">Bem-vindo ao sistema</h1>
-					<h4 class="mb-3 font-weight-light">Não tem uma conta?</h4>
+					<div clas="text-h4 font-weight-light mb-3">
+						{{
+							isFlipped ? 'Tem uma conta? Entre com ela!' : 'Não tem uma conta?'
+						}}
+					</div>
 					<v-hover v-slot="{ isHovering, props }">
 						<v-btn
 							class="mt-2 py-6 d-flex align-center"
@@ -155,11 +170,10 @@ Praesent malesuada ex dignissim, maximus libero dignissim, dignissim nisl. Maece
 							rounded="xl"
 							:color="isHovering ? 'white' : 'white'"
 							@click="flipCard"
-							>Inscrever-se</v-btn
-						>
-					</v-hover>
-				</div></v-col
-			>
+							:text="isFlipped ? 'LOGIN' : 'INSCREVER-SE'"
+						></v-btn>
+					</v-hover></div
+			></v-col>
 		</v-row>
 	</div>
 
@@ -170,6 +184,18 @@ Praesent malesuada ex dignissim, maximus libero dignissim, dignissim nisl. Maece
 		title="Erro"
 		variant="tonal"
 		type="error"
+		border="top"
+		width="400"
+		class="botaoLogin"
+	/>
+
+	<alertComponent
+		v-model="isCreated"
+		closable
+		text="Cadastro criado com sucesso!"
+		title="Sucesso"
+		variant="tonal"
+		type="success"
 		border="top"
 		width="400"
 		class="botaoLogin"
@@ -187,9 +213,11 @@ export default {
 			marker: true,
 			email: '',
 			password: '',
+			user: '',
 			isLogged: false,
 			isFlipped: false,
 			dialog: false,
+			isCreated: false,
 			rules: {
 				required: (value) => !!value || 'O campo é obrigatório',
 			},
@@ -223,6 +251,25 @@ export default {
 							this.isLogged = false;
 						}, 3000);
 					}
+				});
+		},
+		signUp() {
+			console.log('user: ', this.user);
+			console.log('email: ', this.email);
+			console.log('senha: ', this.password);
+			axios
+				.post('http://localhost:3000/users', {
+					username: this.user,
+					email: this.email,
+					password: this.password,
+				})
+				.then((response) => {
+					if (response.status === 201) {
+						this.isCreated = true;
+					}
+				})
+				.catch((err) => {
+					console.error(err);
 				});
 		},
 	},
