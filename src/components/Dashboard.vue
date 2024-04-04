@@ -166,10 +166,34 @@ export default {
 			} else if (this.isBlueClicked) {
 				status = 'saude';
 			}
-			console.log('nome da tarefa:', this.taskName);
-			console.log('status da tarefa:', status);
-			const tratarDate = this.taskDate.toISOString();
-			console.log('data prazo tratada:', tratarDate);
+			let tratarDate = this.taskDate.toISOString();
+
+			const token = localStorage.getItem('access_token');
+
+			axios
+				.post(
+					'http://localhost:3000/tasks',
+					{
+						name: this.taskName,
+						status: status,
+						deadline: tratarDate,
+					},
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					}
+				)
+				.then((response) => {
+					if (response.status === 201) {
+						this.taskName = '';
+						status = '';
+						tratarDate = null;
+					}
+				})
+				.catch((err) => {
+					console.error('Erro no cadastro da task: ', err);
+				});
 		},
 	},
 };

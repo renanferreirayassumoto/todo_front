@@ -254,9 +254,6 @@ export default {
 				});
 		},
 		signUp() {
-			console.log('user: ', this.user);
-			console.log('email: ', this.email);
-			console.log('senha: ', this.password);
 			axios
 				.post('http://localhost:3000/users', {
 					username: this.user,
