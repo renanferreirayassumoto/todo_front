@@ -92,7 +92,15 @@
 				variant="solo-filled"
 				rounded="xl"
 				append-inner-icon="mdi-calendar"
-			></v-text-field>
+			>
+				<template #prepend-inner>
+					<v-icon color="purple" class="mx-1" size="medium">mdi-circle</v-icon>
+					<v-icon color="yellow" class="mx-1" size="medium">mdi-circle</v-icon>
+					<v-icon color="blue" class="mx-1 mr-6" size="medium"
+						>mdi-circle</v-icon
+					>
+				</template>
+			</v-text-field>
 		</div>
 	</div>
 </template>
