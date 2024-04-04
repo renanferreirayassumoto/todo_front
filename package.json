@@ -8,8 +8,10 @@
     "dev": "vite"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.0.0",
     "@mdi/font": "5.9.55",
     "axios": "^1.6.8",
+    "date-fns": "^3.6.0",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-jwt-decode": "^0.1.0",

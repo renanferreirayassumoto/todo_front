@@ -88,31 +88,58 @@
 	<div class="bg-red-accent-2 w-100 h-100 pt-16">
 		<div class="pt-16 w-75 mx-auto">
 			<v-text-field
+				v-model="taskName"
 				label="Qual sua próxima tarefa?"
 				variant="solo-filled"
 				rounded="xl"
 				append-inner-icon="mdi-calendar"
+				@click:append-inner="showCalendar = !showCalendar"
+				@keydown.enter="createTask"
 			>
 				<template #prepend-inner>
-					<v-icon color="purple" class="mx-1" size="medium">mdi-circle</v-icon>
-					<v-icon color="yellow" class="mx-1" size="medium">mdi-circle</v-icon>
-					<v-icon color="blue" class="mx-1 mr-6" size="medium"
+					<v-icon
+						@click="isPurpleClicked = !isPurpleClicked"
+						:color="isYellowClicked || isBlueClicked ? 'grey' : 'purple'"
+						class="mx-1"
+						size="medium"
+						>mdi-circle</v-icon
+					>
+					<v-icon
+						@click="isYellowClicked = !isYellowClicked"
+						:color="isPurpleClicked || isBlueClicked ? 'grey' : 'yellow'"
+						class="mx-1"
+						size="medium"
+						>mdi-circle</v-icon
+					>
+					<v-icon
+						@click="isBlueClicked = !isBlueClicked"
+						:color="isYellowClicked || isPurpleClicked ? 'grey' : 'blue'"
+						class="mx-1 mr-6"
+						size="medium"
 						>mdi-circle</v-icon
 					>
 				</template>
 			</v-text-field>
+			<v-date-picker v-model="taskDate" v-if="showCalendar"></v-date-picker>
 		</div>
 	</div>
 </template>
 
 <script>
 import VueJwtDecode from 'vue-jwt-decode';
+import axios from 'axios';
 
 export default {
 	name: 'Dashboard',
 	data() {
 		return {
 			current_user: '',
+			isPurpleClicked: false,
+			isYellowClicked: false,
+			isBlueClicked: false,
+			taskDate: new Date(),
+			showCalendar: false,
+			taskName: '',
 		};
 	},
 	mounted() {
@@ -123,6 +150,27 @@ export default {
 		} catch (error) {
 			console.error(error);
 		}
+	},
+	watch: {
+		taskDate(newVal) {
+			this.showCalendar = false;
+		},
+	},
+	methods: {
+		createTask() {
+			let status = '';
+			if (this.isPurpleClicked) {
+				status = 'financeiro';
+			} else if (this.isYellowClicked) {
+				status = 'pessoal';
+			} else if (this.isBlueClicked) {
+				status = 'saude';
+			}
+			console.log('nome da tarefa:', this.taskName);
+			console.log('status da tarefa:', status);
+			const tratarDate = this.taskDate.toISOString();
+			console.log('data prazo tratada:', tratarDate);
+		},
 	},
 };
 </script>
