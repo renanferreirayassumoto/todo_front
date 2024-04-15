@@ -1,6 +1,6 @@
 <template>
 	<v-app>
-		<v-navigation-drawer width="300" permanent>
+		<v-navigation-drawer v-if="showDrawer" width="300" permanent>
 			<v-list-item
 				class="pt-10 d-flex justify-center"
 				prepend-avatar="https://picsum.photos/200"
@@ -110,6 +110,7 @@ export default {
 	data() {
 		return {
 			current_user: '',
+			showDrawer: false,
 		};
 	},
 	mounted() {
@@ -122,6 +123,15 @@ export default {
 		}
 
 		this.fetchTask();
+	},
+	watch: {
+		$route() {
+			if (this.$route.path !== '/') {
+				this.showDrawer = true;
+			} else {
+				this.showDrawer = false;
+			}
+		},
 	},
 	methods: {
 		fetchTask() {
